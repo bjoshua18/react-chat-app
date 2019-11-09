@@ -11,6 +11,16 @@ const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
 
+// Escuchamos cuando haya una nueva conexion
+io.on('connection', (socket) => {
+	console.log('We have a new connection.')
+
+	// Escuchamos cuando el socket se desconecte
+	socket.on('disconnect', () => {
+		console.log('User had left.')
+	})
+})
+
 app.use(router) // Llamamos al router como a un middleware
 
 server.listen(PORT, () => console.log(`Server has started on port ${PORT}`))
