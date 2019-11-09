@@ -15,6 +15,11 @@ const io = socketio(server)
 io.on('connection', (socket) => {
 	console.log('We have a new connection.')
 
+	// Cuando alguien se apunta a un chat...
+	socket.on('join', ({ name, room }, callback) => {
+		console.log(name, room)
+	})
+
 	// Escuchamos cuando el socket se desconecte
 	socket.on('disconnect', () => {
 		console.log('User had left.')

@@ -19,7 +19,15 @@ const Chat = ({ location }) => {
 		setRoom(room)
 
 		// Cuando alguien entra al chat, envia name y room al server
-		socket.emit('join', { name, room })
+		socket.emit('join', { name, room }, () => {
+
+		})
+
+		// Devuelve la funcion de desconexion
+		return () => {
+			socket.emit('disconnect')
+			socket.off()
+		}
 	}, [ENDPOINT, location.search])
 
 	return (
