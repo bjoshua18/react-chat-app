@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000 // Puerto por defecto 5000
 
 const router = require('./router') // Importamos el fichero con las rutas
 
-// Estructura básica para crear un servidor con socket.io
+// Estructura basica para crear un servidor con socket.io
 const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
@@ -32,9 +32,19 @@ io.on('connection', (socket) => {
 		callback() // Ejecutamos el callback sin errores
 	})
 
+	// Cuando un usuario envia un mensaje...
+	socket.on('sendMessage', (message, callback) => {
+		const user = getUser(socket.id) // Obtenemos al usuario que ha escrito
+		io.to(user.room).emit('message', { user: user.name, text: message })
+
+		callback()
+	})
+
 	// Escuchamos cuando el socket se desconecte
 	socket.on('disconnect', () => {
-		console.log('User had left.')
+		const user = removeUser(socket.id)
+		if(user)
+			io.to(user.room).emit('message', {user: 'admin', text: `${user.name} has left the chat.`})
 	})
 })
 
