@@ -3,7 +3,7 @@ const users = []
 const addUser = ({ id, name, room }) => {
 	// JavaScript Master = javascriptmaster
 	name = name.trim().toLowerCase()
-	room = romm.trim().toLowerCase()
+	room = room.trim().toLowerCase()
 
 	// Buscamos si el usuario existe
 	const existingUser = users.find((user) => user.room === room && user.name === name)
