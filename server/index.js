@@ -29,13 +29,17 @@ io.on('connection', (socket) => {
 		socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined` })
 
 		socket.join(user.room) // Agregamos el socket al room
+
+		io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
+
 		callback() // Ejecutamos el callback sin errores
 	})
 
 	// Cuando un usuario envia un mensaje...
 	socket.on('sendMessage', (message, callback) => {
 		const user = getUser(socket.id) // Obtenemos al usuario que ha escrito
-		io.to(user.room).emit('message', { user: user.name, text: message })
+		io.to(user.room).emit('message', { user: user.name, text: message }) // Enviamos dato cuando se emite message
+		io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
 
 		callback()
 	})
