@@ -7,6 +7,7 @@ import './Chat.css'
 import InfoBar from "../InfoBar/InfoBar"
 import Input from "../Input/Input"
 import Messages from "../Messages/Messages"
+import TextContainer from "../TextContainer/TextContainer"
 
 let socket
 
@@ -15,6 +16,7 @@ const Chat = ({ location }) => {
 	const [room, setRoom] = useState('')
 	const [message, setMessage] = useState('')
 	const [messages, setMessages] = useState([])
+	const [users, setUsers] = useState([])
 	const ENDPOINT = 'localhost:5000' // ruta del server
 
 	useEffect(() => {
@@ -34,6 +36,7 @@ const Chat = ({ location }) => {
 		// Devuelve la funcion de desconexion
 		return () => {
 			socket.emit('disconnect')
+			socket.on('roomData', ({ room, users }) => setUsers(users))
 			socket.off()
 		}
 	}, [ENDPOINT, location.search])
@@ -43,6 +46,8 @@ const Chat = ({ location }) => {
 		socket.on('message', (message) => {
 			setMessages([...messages, message])
 		})
+
+		socket.on('roomData', ({ room, users }) => setUsers(users))
 	}, [messages])
 
 	// function for sending messages
@@ -52,8 +57,6 @@ const Chat = ({ location }) => {
 		event.preventDefault()
 	}
 
-	console.log(message, messages)
-
 	return (
 		<div className="outerContainer">
 			<div className="container">
@@ -61,6 +64,7 @@ const Chat = ({ location }) => {
 				<Messages messages={messages} name={name} />
 				<Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
 			</div>
+			<TextContainer users={users} />
 		</div>
 	)
 }

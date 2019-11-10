@@ -47,8 +47,10 @@ io.on('connection', (socket) => {
 	// Escuchamos cuando el socket se desconecte
 	socket.on('disconnect', () => {
 		const user = removeUser(socket.id)
-		if(user)
+		if(user) {
 			io.to(user.room).emit('message', {user: 'admin', text: `${user.name} has left the chat.`})
+			io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
+		}
 	})
 })
 
